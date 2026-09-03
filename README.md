@@ -89,19 +89,19 @@ pause
 Дальше по одной команде за раз. Первая — переход в папку со скриптом, путь подставьте свой:
 
 ```powershell
-cd C:\Tools\ai-limit-monitor
+cd C:\limits-watcher
 ```
 
 Вторая — снять с файла метку «скачан из интернета»:
 
 ```powershell
-Unblock-File .\AI-Limit-Monitor.ps1
+Unblock-File .\limits-watcher.ps1
 ```
 
 Третья — собственно установка. Длинная, копируйте целиком одной строкой:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\AI-Limit-Monitor.ps1 -Setup
+powershell -NoProfile -ExecutionPolicy Bypass -File .\limits-watcher.ps1 -Setup
 ```
 
 Она проведёт четыре шага в одном окне: зарегистрирует источник уведомлений, покажет тестовое
@@ -118,7 +118,7 @@ Claude Code сообщает только после первого ответа
 поэтому нужен именно новый запуск. Затем проверьте, что данные дошли:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\AI-Limit-Monitor.ps1 -CheckStatusline
+powershell -NoProfile -ExecutionPolicy Bypass -File .\limits-watcher.ps1 -CheckStatusline
 ```
 
 Команда разложит по пунктам, на каком шаге всё остановилось, если что-то не сработало.
@@ -133,15 +133,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\AI-Limit-Monitor.ps1 -Chec
 
 | путь | зачем |
 |---|---|
-| `%LOCALAPPDATA%\AILimitMonitor\` | журнал работы и служебные файлы |
+| `%LOCALAPPDATA%\limits-watcher\` | журнал работы и служебные файлы |
 | `HKCU:\SOFTWARE\Classes\AppUserModelId\AI.Limit.Monitor` | без этой записи Windows молча не показывает уведомление |
-| `shell:startup\AI Limit Monitor.lnk` | автозапуск при входе в систему |
+| `shell:startup\limits-watcher.lnk` | автозапуск при входе в систему |
 | `%USERPROFILE%\.claude\settings.json` | строка состояния Claude Code; рядом кладётся копия `settings.json.bak-<дата>` |
 
 ## Удаление
 
 Двойной клик по `uninstall.bat`. Он уберёт программу из автозапуска и вернёт настройки
-Claude Code как были. Папку `%LOCALAPPDATA%\AILimitMonitor` можно удалить руками.
+Claude Code как были. Папку `%LOCALAPPDATA%\limits-watcher` можно удалить руками.
 
 ---
 
@@ -176,7 +176,7 @@ Windows по умолчанию запрещает запускать скача
 Посмотрите журнал, там видно, что программа видела в этот момент:
 
 ```powershell
-Get-Content "$env:LOCALAPPDATA\AILimitMonitor\monitor.log" -Tail 20
+Get-Content "$env:LOCALAPPDATA\limits-watcher\monitor.log" -Tail 20
 ```
 
 ---
