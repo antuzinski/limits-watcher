@@ -1,14 +1,14 @@
-# Limits watcher: мониторинг восстановления лимитов в LLM
+# Limits Watcher
 
-Присылает уведомление в тот момент, когда лимиты **Codex CLI** или **Claude Code** обновились.
+Уведомление в тот момент, когда лимиты **Codex CLI** или **Claude Code** снова доступны.
 
 Программа не запускает ни `codex`, ни `claude` и не ходит в сеть — она читает файлы,
 которые эти инструменты пишут сами. Проверка занимает доли секунды и не стоит ни одного токена.
 
 ```
 ┌────────────────────────────────────┐   ┌────────────────────────────────────┐
-│ Limits watcher                     │   │ Limits watcher                     │
-│ Codex доступен! 🟢                |   │ Claude доступен! 🟣               │
+│ LIMITS WATCHER                   │   │ LIMITS WATCHER                   │
+│ Codex доступен! 🟢                 │   │ Claude доступен! 🟣                │
 │ Лимиты восстановлены.              │   │ Лимиты восстановлены.              │
 │ 5ч 4%, окно до 09:12               │   │ 5ч 12%, окно до 09:30              │
 │                            [ OK ]  │   │                            [ OK ]  │
@@ -25,7 +25,7 @@
 
 ## Чего программа НЕ делает
 
-Весь код — в одном файле `AI-Limit-Monitor.ps1`, его можно прочитать перед установкой.
+Весь код — в одном файле `Limits-Watcher.ps1`, его можно прочитать перед установкой.
 
 | | |
 |---|---|
@@ -53,7 +53,7 @@ Codex записывает на диск именно во время такой
 
 ### Вариант A — двойной клик
 
-1. Скачайте `AI-Limit-Monitor.ps1` и `install.bat` **в одну папку**.
+1. Скачайте `Limits-Watcher.ps1` и `install.bat` **в одну папку**.
 2. Двойной клик по `install.bat`.
 3. Если появится синее окно SmartScreen — «Подробнее» → «Выполнить в любом случае».
 
@@ -65,15 +65,15 @@ Codex записывает на диск именно во время такой
 
 ```bat
 @echo off
-title Limits watcher - install
+title Limits Watcher - install
 set "PS=%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"
-if not exist "%~dp0AI-Limit-Monitor.ps1" (
-  echo AI-Limit-Monitor.ps1 not found next to this file.
+if not exist "%~dp0Limits-Watcher.ps1" (
+  echo Limits-Watcher.ps1 not found next to this file.
   pause
   exit /b 1
 )
-"%PS%" -NoProfile -ExecutionPolicy Bypass -Command "Unblock-File -LiteralPath '%~dp0Limits watcher.ps1' -ErrorAction SilentlyContinue"
-"%PS%" -NoProfile -ExecutionPolicy Bypass -File "%~dp0AI-Limit-Monitor.ps1" -Setup
+"%PS%" -NoProfile -ExecutionPolicy Bypass -Command "Unblock-File -LiteralPath '%~dp0Limits-Watcher.ps1' -ErrorAction SilentlyContinue"
+"%PS%" -NoProfile -ExecutionPolicy Bypass -File "%~dp0Limits-Watcher.ps1" -Setup
 echo.
 pause
 ```
@@ -89,19 +89,19 @@ pause
 Дальше по одной команде за раз. Первая — переход в папку со скриптом, путь подставьте свой:
 
 ```powershell
-cd C:\limits-watcher
+cd C:\Tools\limits-watcher
 ```
 
 Вторая — снять с файла метку «скачан из интернета»:
 
 ```powershell
-Unblock-File .\limits-watcher.ps1
+Unblock-File .\Limits-Watcher.ps1
 ```
 
 Третья — собственно установка. Длинная, копируйте целиком одной строкой:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\limits-watcher.ps1 -Setup
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Limits-Watcher.ps1 -Setup
 ```
 
 Она проведёт четыре шага в одном окне: зарегистрирует источник уведомлений, покажет тестовое
@@ -118,7 +118,7 @@ Claude Code сообщает только после первого ответа
 поэтому нужен именно новый запуск. Затем проверьте, что данные дошли:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\limits-watcher.ps1 -CheckStatusline
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Limits-Watcher.ps1 -CheckStatusline
 ```
 
 Команда разложит по пунктам, на каком шаге всё остановилось, если что-то не сработало.
@@ -133,15 +133,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\limits-watcher.ps1 -CheckS
 
 | путь | зачем |
 |---|---|
-| `%LOCALAPPDATA%\limits-watcher\` | журнал работы и служебные файлы |
-| `HKCU:\SOFTWARE\Classes\AppUserModelId\AI.Limit.Monitor` | без этой записи Windows молча не показывает уведомление |
-| `shell:startup\limits-watcher.lnk` | автозапуск при входе в систему |
+| `%LOCALAPPDATA%\LimitsWatcher\` | журнал работы и служебные файлы |
+| `HKCU:\SOFTWARE\Classes\AppUserModelId\Limits.Watcher` | без этой записи Windows молча не показывает уведомление |
+| `shell:startup\Limits Watcher.lnk` | автозапуск при входе в систему |
 | `%USERPROFILE%\.claude\settings.json` | строка состояния Claude Code; рядом кладётся копия `settings.json.bak-<дата>` |
 
 ## Удаление
 
 Двойной клик по `uninstall.bat`. Он уберёт программу из автозапуска и вернёт настройки
-Claude Code как были. Папку `%LOCALAPPDATA%\limits-watcher` можно удалить руками.
+Claude Code как были. Папку `%LOCALAPPDATA%\LimitsWatcher` можно удалить руками.
 
 ---
 
@@ -176,7 +176,7 @@ Windows по умолчанию запрещает запускать скача
 Посмотрите журнал, там видно, что программа видела в этот момент:
 
 ```powershell
-Get-Content "$env:LOCALAPPDATA\limits-watcher\monitor.log" -Tail 20
+Get-Content "$env:LOCALAPPDATA\LimitsWatcher\monitor.log" -Tail 20
 ```
 
 ---
